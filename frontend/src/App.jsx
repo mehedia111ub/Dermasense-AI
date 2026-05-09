@@ -1,10 +1,13 @@
-import { useState } from "react";
+// import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import "./App.css";
 
 function App() {
   const [file, setFile] = useState(null);
   const [report, setReport] = useState(null);
+  const fileInputRef = useRef(null);
+  const [overlayImage, setOverlayImage] = useState(null);
   const [question, setQuestion] = useState("");
   const [chatAnswer, setChatAnswer] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,6 +26,7 @@ function App() {
     try {
       const response = await axios.post("http://127.0.0.1:8000/upload", formData);
       setReport(response.data.analysis_report);
+      setOverlayImage(`http://127.0.0.1:8000/${response.data.overlay_image}`);
     } catch (error) {
       alert("Image upload failed.");
       console.error(error);
@@ -48,18 +52,35 @@ function App() {
       alert("Chat request failed.");
       console.error(error);
     }
+    
   };
+
+  const resetSession = () => {
+      setFile(null);
+      setReport(null);
+      setOverlayImage(null);
+      setQuestion("");
+      setChatAnswer("");
+      fileInputRef.current.value = "";
+    };
 
   return (
     <div className="container">
       <h1>DermaSense AI</h1>
+      <button className="reset-button" onClick={resetSession}>
+        Reset Session
+      </button>
       <p className="subtitle">
         Multimodal AI system for skin hyperpigmentation analysis and educational conversation.
       </p>
 
       <div className="card">
         <h2>1. Upload Skin Image</h2>
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} />
+        <input 
+          type="file" 
+          accept="image/*"
+          ref={fileInputRef} 
+          onChange={(e) => setFile(e.target.files[0])} />
         <button onClick={uploadImage}>{loading ? "Analysing..." : "Analyse Image"}</button>
       </div>
 
@@ -68,6 +89,12 @@ function App() {
           <h2>2. AI Generated NLG Report</h2>
           <p><strong>Prediction:</strong> {report.prediction}</p>
           <p><strong>Confidence:</strong> {report.confidence}%</p>
+          {overlayImage && (
+            <div>
+              <h3>Explainability Overlay</h3>
+              <img src={overlayImage} alt="Explainability overlay" className="overlay-image" />
+            </div>
+          )}
           <div className="answer">
           <h3>Mistral Generated Report</h3>
           <p>{report.nlg_report}</p>

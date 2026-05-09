@@ -62,3 +62,22 @@ button:hover {
   border-radius: 8px;
   white-space: pre-line;
 }
+
+.overlay-image {
+  width: 100%;
+  max-width: 350px;
+  display: block;
+  margin: 15px auto;
+  border-radius: 12px;
+  border: 2px solid #0f766e;
+}
+
+.reset-button {
+  display: block;
+  margin: 0 auto 25px auto;
+  background: #374151;
+}
+
+.reset-button:hover {
+  background: #111827;
+}

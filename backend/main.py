@@ -1,9 +1,11 @@
+from fastapi.staticfiles import StaticFiles
 from api.chat import router as chat_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.upload import router as upload_router
 
 app = FastAPI()
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # upload router
 app.add_middleware(
