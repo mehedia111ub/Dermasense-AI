@@ -6,5 +6,5 @@ numpy
 torch
 torchvision
 transformers
-openai
 python-dotenv
+Mistral
